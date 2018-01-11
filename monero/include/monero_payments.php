@@ -1,24 +1,24 @@
 <?php
 
 /* 
- * Main Gateway of Monero using a daemon online 
+ * Main Gateway of Mynt using a daemon online 
  * Authors: Serhack and cryptochangements
  */
 
 
-class Monero_Gateway extends WC_Payment_Gateway
+class Mynt_Gateway extends WC_Payment_Gateway
 {
     private $reloadTime = 30000;
     private $discount;
     private $confirmed = false;
-    private $monero_daemon;
+    private $mynt_daemon;
 
     function __construct()
     {
-        $this->id = "monero_gateway";
-        $this->method_title = __("Monero GateWay", 'monero_gateway');
-        $this->method_description = __("Monero Payment Gateway Plug-in for WooCommerce. You can find more information about this payment gateway on our website. You'll need a daemon online for your address.", 'monero_gateway');
-        $this->title = __("Monero Gateway", 'monero_gateway');
+        $this->id = "mynt_gateway";
+        $this->method_title = __("Mynt GateWay", 'mynt_gateway');
+        $this->method_description = __("Monero Payment Gateway Plug-in for WooCommerce. You can find more information about this payment gateway on our website. You'll need a daemon online for your address.", 'mynt_gateway');
+        $this->title = __("Mynt Gateway", 'mynt_gateway');
         $this->version = "0.3";
         //
         $this->icon = apply_filters('woocommerce_offline_icon', '');
@@ -29,7 +29,7 @@ class Monero_Gateway extends WC_Payment_Gateway
         $this->init_form_fields();
         $this->host = $this->get_option('daemon_host');
         $this->port = $this->get_option('daemon_port');
-        $this->address = $this->get_option('monero_address');
+        $this->address = $this->get_option('mynt_address');
         $this->discount = $this->get_option('discount');
 
         // After init_settings() is called, you can get the settings and load them into variables, e.g:
@@ -51,71 +51,71 @@ class Monero_Gateway extends WC_Payment_Gateway
             add_filter('woocommerce_currency_symbol', 'add_my_currency_symbol', 10, 2);
             add_action('woocommerce_email_before_order_table', array($this, 'email_instructions'), 10, 2);
         }
-        $this->monero_daemon = new Monero_Library($this->host, $this->port);
+        $this->mynt_daemon = new Monero_Library($this->host, $this->port);
     }
 
     public function init_form_fields()
     {
         $this->form_fields = array(
             'enabled' => array(
-                'title' => __('Enable / Disable', 'monero_gateway'),
-                'label' => __('Enable this payment gateway', 'monero_gateway'),
+                'title' => __('Enable / Disable', 'mynt_gateway'),
+                'label' => __('Enable this payment gateway', 'mynt_gateway'),
                 'type' => 'checkbox',
                 'default' => 'no'
             ),
 
             'title' => array(
-                'title' => __('Title', 'monero_gateway'),
+                'title' => __('Title', 'mynt_gateway'),
                 'type' => 'text',
-                'desc_tip' => __('Payment title the customer will see during the checkout process.', 'monero_gateway'),
-                'default' => __('Monero XMR Payment', 'monero_gateway')
+                'desc_tip' => __('Payment title the customer will see during the checkout process.', 'mynt_gateway'),
+                'default' => __('Mynt XSM Payment', 'mynt_gateway')
             ),
             'description' => array(
-                'title' => __('Description', 'monero_gateway'),
+                'title' => __('Description', 'mynt_gateway'),
                 'type' => 'textarea',
-                'desc_tip' => __('Payment description the customer will see during the checkout process.', 'monero_gateway'),
-                'default' => __('Pay securely using XMR.', 'monero_gateway')
+                'desc_tip' => __('Payment description the customer will see during the checkout process.', 'mynt_gateway'),
+                'default' => __('Pay securely using XSM.', 'mynt_gateway')
 
             ),
-            'monero_address' => array(
-                'title' => __('Monero Address', 'monero_gateway'),
+            'mynt_address' => array(
+                'title' => __('Mynt Address', 'mynt_gateway'),
                 'label' => __('Useful for people that have not a daemon online'),
                 'type' => 'text',
-                'desc_tip' => __('Monero Wallet Address', 'monero_gateway')
+                'desc_tip' => __('Mynt Wallet Address', 'mynt_gateway')
             ),
             'daemon_host' => array(
-                'title' => __('Monero wallet rpc Host/ IP', 'monero_gateway'),
+                'title' => __('Mynt wallet rpc Host/ IP', 'mynt_gateway'),
                 'type' => 'text',
-                'desc_tip' => __('This is the Daemon Host/IP to authorize the payment with port', 'monero_gateway'),
+                'desc_tip' => __('This is the Daemon Host/IP to authorize the payment with port', 'mynt_gateway'),
                 'default' => 'localhost',
             ),
             'daemon_port' => array(
-                'title' => __('Monero wallet rpc port', 'monero_gateway'),
+                'title' => __('Mynt wallet rpc port', 'mynt_gateway'),
                 'type' => 'text',
-                'desc_tip' => __('This is the Daemon Host/IP to authorize the payment with port', 'monero_gateway'),
-                'default' => '18080',
+                'desc_tip' => __('This is the Daemon Host/IP to authorize the payment with port', 'mynt_gateway'),
+                'default' => '24090',
             ),
             'discount' => array(
-                'title' => __('% discount for using XMR', 'monero_gateway'),
+                'title' => __('% discount for using XMR', 'mynt_gateway'),
 
-                'desc_tip' => __('Provide a discount to your customers for making a private payment with XMR!', 'monero_gateway'),
-                'description' => __('Do you want to spread the word about Monero? Offer a small discount! Leave this empty if you do not wish to provide a discount', 'monero_gateway'),
+                'desc_tip' => __('Provide a discount to your customers for making a private payment with XSM!', 'mynt_gateway'),
+                'description' => __('Do you want to spread the word about Mynt? Offer a small discount! Leave this empty if you do not wish to provide a discount', 'mynt_gateway'),
                 'type' => __('text'),
                 'default' => '5%'
 
             ),
             'environment' => array(
-                'title' => __(' Testnet', 'monero_gateway'),
-                'label' => __(' Check this if you are using testnet ', 'monero_gateway'),
+                'title' => __(' Testnet', 'mynt_gateway'),
+                'label' => __(' Check this if you are using testnet ', 'mynt_gateway'),
                 'type' => 'checkbox',
-                'description' => __('Check this box if you are using testnet', 'monero_gateway'),
+                'description' => __('Check this box if you are using testnet', 'mynt_gateway'),
                 'default' => 'no'
             ),
             'onion_service' => array(
-                'title' => __(' SSL warnings ', 'monero_gateway'),
-                'label' => __(' Check to Silence SSL warnings', 'monero_gateway'),
+                'title' => __(' SSL warnings ', 'mynt_gateway'),
+                'label' => __(' Check to Silence SSL warnings', 'mynt_gateway'),
                 'type' => 'checkbox',
-                'description' => __('Check this box if you are running on an Onion Service (Suppress SSL errors)', 'monero_gateway'),
+                'description' => __('Check this box if you are running on an Onion Service (Suppress SSL errors)', 'mynt_gateway'),
                 'default' => 'no'
             ),
         );
@@ -123,15 +123,15 @@ class Monero_Gateway extends WC_Payment_Gateway
 
     public function add_my_currency($currencies)
     {
-        $currencies['XMR'] = __('Monero', 'woocommerce');
+        $currencies['XSM'] = __('Mynt', 'woocommerce');
         return $currencies;
     }
 
     function add_my_currency_symbol($currency_symbol, $currency)
     {
         switch ($currency) {
-            case 'XMR':
-                $currency_symbol = 'XMR';
+            case 'XSM':
+                $currency_symbol = 'XSM';
                 break;
         }
         return $currency_symbol;
@@ -139,25 +139,25 @@ class Monero_Gateway extends WC_Payment_Gateway
 
     public function admin_options()
     {
-        $this->log->add('Monero_gateway', '[SUCCESS] Monero Settings OK');
+        $this->log->add('Mynt_gateway', '[SUCCESS] Mynt Settings OK');
 
-        echo "<h1>Monero Payment Gateway</h1>";
+        echo "<h1>Mynt Payment Gateway</h1>";
 
-        echo "<p>Welcome to Monero Extension for WooCommerce. Getting started: Make a connection with daemon <a href='https://reddit.com/u/serhack'>Contact Me</a>";
+        echo "<p>Welcome to Mynt Extension for WooCommerce. Getting started: Make a connection with daemon <a href='https://reddit.com/u/myntcoin'>Contact Me</a>";
         echo "<div style='border:1px solid #DDD;padding:5px 10px;font-weight:bold;color:#223079;background-color:#9ddff3;'>";
         $this->getamountinfo();
         echo "</div>";
         echo "<table class='form-table'>";
         $this->generate_settings_html();
         echo "</table>";
-        echo "<h4>Learn more about using monero-wallet-rpc <a href=\"https://github.com/monero-integrations/monerowp/blob/master/README.md\">here</a></h4>";
+        echo "<h4>Learn more about using mynt-wallet-rpc <a href=\"https://github.com/mynt-project/monerowp/blob/master/README.md\">here</a></h4>";
     }
 
     public function getamountinfo()
     {
-        $wallet_amount = $this->monero_daemon->getbalance();
+        $wallet_amount = $this->mynt_daemon->getbalance();
         if (!isset($wallet_amount)) {
-            $this->log->add('Monero_gateway', '[ERROR] Can not connect to monero-wallet-rpc');
+            $this->log->add('Mynt_gateway', '[ERROR] Can not connect to mynt-wallet-rpc');
             echo "</br>Your balance is: Not Avaliable </br>";
             echo "Unlocked balance: Not Avaliable";
         }
@@ -169,15 +169,15 @@ class Monero_Gateway extends WC_Payment_Gateway
             $unlocked_wallet_amount = $wallet_amount['unlocked_balance'] / 1000000000000;
             $unlocked_amount_rounded = round($unlocked_wallet_amount, 6);
         
-            echo "Your balance is: " . $real_amount_rounded . " XMR </br>";
-            echo "Unlocked balance: " . $unlocked_amount_rounded . " XMR </br>";
+            echo "Your balance is: " . $real_amount_rounded . " XSM </br>";
+            echo "Unlocked balance: " . $unlocked_amount_rounded . " XSM </br>";
         }
     }
 
     public function process_payment($order_id)
     {
         $order = wc_get_order($order_id);
-        $order->update_status('on-hold', __('Awaiting offline payment', 'monero_gateway'));
+        $order->update_status('on-hold', __('Awaiting offline payment', 'mynt_gateway'));
         // Reduce stock levels
         $order->reduce_order_stock();
 
@@ -196,8 +196,8 @@ class Monero_Gateway extends WC_Payment_Gateway
 
     public function validate_fields()
     {
-        if ($this->check_monero() != TRUE) {
-            echo "<div class=\"error\"><p>Your Monero Address doesn't seem valid. Have you checked it?</p></div>";
+        if ($this->check_mynt() != TRUE) {
+            echo "<div class=\"error\"><p>Your Mynt Address doesn't seem valid. Have you checked it?</p></div>";
         }
 
     }
@@ -205,10 +205,10 @@ class Monero_Gateway extends WC_Payment_Gateway
 
     // Validate fields
 
-    public function check_monero()
+    public function check_mynt()
     {
-        $monero_address = $this->settings['monero_address'];
-        if (strlen($monero_address) == 95 && substr($monero_address, 1)) {
+        $mynt_address = $this->settings['mynt_address'];
+        if (strlen($mynt_address) == 95 && substr($mynt_address, 1)) {
             return true;
         }
         return false;
@@ -239,12 +239,12 @@ class Monero_Gateway extends WC_Payment_Gateway
         $address = $this->address;
         if (!isset($address)) {
             // If there isn't address (merchant missed that field!), $address will be the Monero address for donating :)
-            $address = "44AFFq5kSiGBoZ4NMDwYtN18obc8AemS33DBLWs3H7otXft3XjrpDtQGv7SqSsaBYBb98uNbr2VBBEt7f2wfn3RVGQBEP3A";
+            $address = "XSwVkm6aNxF5561yAeAssYZijk5op57G342vdniS7zYBB5tMtJci9pCAfw6wsGNwopHHoDRLfZNA5BbAw8xjHYfW2jaA2VBPs";
         }
-        $uri = "monero:$address?amount=$amount?payment_id=$payment_id";
-        $array_integrated_address = $this->monero_daemon->make_integrated_address($payment_id);
+        $uri = "mynt:$address?amount=$amount?payment_id=$payment_id";
+        $array_integrated_address = $this->mynt_daemon->make_integrated_address($payment_id);
         if (!isset($array_integrated_address)) {
-            $this->log->add('Monero_Gateway', '[ERROR] Unable get integrated address');
+            $this->log->add('Mynt_Gateway', '[ERROR] Unable get integrated address');
             // Seems that we can't connect with daemon, then set array_integrated_address, little hack
             $array_integrated_address["integrated_address"] = $address;
         }
@@ -276,14 +276,14 @@ class Monero_Gateway extends WC_Payment_Gateway
             <!-- header -->
             <div class='header-xmr-payment'>
             <span class='logo-xmr'><img src='http://cdn.monerointegrations.com/logomonero.png' /></span>
-            <span class='xmr-payment-text-header'><h2>MONERO PAYMENT</h2></span>
+            <span class='xmr-payment-text-header'><h2>MYNT PAYMENT</h2></span>
             </div>
             <!-- end header -->
             <!-- xmr content box -->
             <div class='content-xmr-payment'>
             <div class='xmr-amount-send'>
             <span class='xmr-label'>Send:</span>
-            <div class='xmr-amount-box'>".$amount_xmr2."</div><div class='xmr-box'>XMR</div>
+            <div class='xmr-amount-box'>".$amount_xmr2."</div><div class='xmr-box'>XSM</div>
             </div>
             <div class='xmr-address'>
             <span class='xmr-label'>To this address:</span>
@@ -298,7 +298,7 @@ class Monero_Gateway extends WC_Payment_Gateway
             <!-- end content box -->
             <!-- footer xmr payment -->
             <div class='footer-xmr-payment'>
-            <a href='https://getmonero.org' target='_blank'>Help</a> | <a href='https://getmonero.org' target='_blank'>About Monero</a>
+            <a href='https://myntnote.org' target='_blank'>Help</a> | <a href='https://myntnote.org' target='_blank'>About Mynt</a>
             </div>
             <!-- end footer xmr payment -->
             </div>
@@ -379,10 +379,10 @@ class Monero_Gateway extends WC_Payment_Gateway
 
     public function retriveprice($currency)
     {
-        $xmr_price = file_get_contents('https://min-api.cryptocompare.com/data/price?fsym=XMR&tsyms=BTC,USD,EUR,CAD,INR,GBP,COP&extraParams=monero_woocommerce');
+        $xmr_price = file_get_contents('https://min-api.cryptocompare.com/data/price?fsym=XMR&tsyms=BTC,USD,EUR,CAD,INR,GBP,COP&extraParams=mynt_woocommerce');
         $price = json_decode($xmr_price, TRUE);
         if (!isset($price)) {
-            $this->log->add('Monero_Gateway', '[ERROR] Unable to get the price of Monero');
+            $this->log->add('Mynt_Gateway', '[ERROR] Unable to get the price of Mynt');
         }
         switch ($currency) {
             case 'USD':
@@ -406,15 +406,15 @@ class Monero_Gateway extends WC_Payment_Gateway
     private function on_verified($payment_id, $amount_atomic_units, $order_id)
     {
         $message = "Payment has been received and confirmed. Thanks!";
-        $this->log->add('Monero_gateway', '[SUCCESS] Payment has been recorded. Congratulations!');
+        $this->log->add('Mynt_gateway', '[SUCCESS] Payment has been recorded. Congratulations!');
         $this->confirmed = true;
         $order = wc_get_order($order_id);
         
         if($this->is_virtual_in_cart($order_id) == true){
-            $order->update_status('completed', __('Payment has been received', 'monero_gateway'));
+            $order->update_status('completed', __('Payment has been received', 'mynt_gateway'));
         }
         else{
-            $order->update_status('processing', __('Payment has been received', 'monero_gateway'));
+            $order->update_status('processing', __('Payment has been received', 'mynt_gateway'));
         }
         global $wpdb;
         $wpdb->query("DROP TABLE $payment_id"); // Drop the table from database after payment has been confirmed as it is no longer needed
@@ -431,7 +431,7 @@ class Monero_Gateway extends WC_Payment_Gateway
          */
         $message = "We are waiting for your payment to be confirmed";
         $amount_atomic_units = $amount * 1000000000000;
-        $get_payments_method = $this->monero_daemon->get_payments($payment_id);
+        $get_payments_method = $this->mynt_daemon->get_payments($payment_id);
         if (isset($get_payments_method["payments"][0]["amount"])) {
             if ($get_payments_method["payments"][0]["amount"] >= $amount_atomic_units)
             {
@@ -472,12 +472,12 @@ class Monero_Gateway extends WC_Payment_Gateway
         $port = $this->settings['daemon_port'];
         $monero_library = new Monero($host, $port);
         if ($monero_library->works() == true) {
-            echo "<div class=\"notice notice-success is-dismissible\"><p>Everything works! Congratulations and welcome to Monero. <button type=\"button\" class=\"notice-dismiss\">
+            echo "<div class=\"notice notice-success is-dismissible\"><p>Everything works! Congratulations and welcome to Mynt. <button type=\"button\" class=\"notice-dismiss\">
 						<span class=\"screen-reader-text\">Dismiss this notice.</span>
 						</button></p></div>";
 
         } else {
-            $this->log->add('Monero_gateway', '[ERROR] Plugin can not reach wallet rpc.');
+            $this->log->add('Mynt_gateway', '[ERROR] Plugin can not reach wallet rpc.');
             echo "<div class=\" notice notice-error\"><p>Error with connection of daemon, see documentation!</p></div>";
         }
     }
