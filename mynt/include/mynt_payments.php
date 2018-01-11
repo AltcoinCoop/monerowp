@@ -150,7 +150,7 @@ class Mynt_Gateway extends WC_Payment_Gateway
         echo "<table class='form-table'>";
         $this->generate_settings_html();
         echo "</table>";
-        echo "<h4>Learn more about using mynt-wallet-rpc <a href=\"https://github.com/mynt-project/monerowp/blob/master/README.md\">here</a></h4>";
+        echo "<h4>Learn more about using mynt-wallet-rpc <a href=\"https://github.com/mynt-project/myntwp/blob/master/README.md\">here</a></h4>";
     }
 
     public function getamountinfo()
