@@ -7,8 +7,8 @@
  * http://json-rpc.org/wiki/specification
  *
  * @author Kacper Rowinski <krowinski@implix.com>
- * http://implix.com
- * Modified to work with monero-rpc wallet by Serhack and cryptochangements
+ * http://implix.com -- Originally Modified by Serhack and cryptochangements
+ * Modified to work with mynt-rpc wallet by ShopGlobal
  */
 class Monero_Library
 {
@@ -184,7 +184,7 @@ class Monero_Library
         }
         // check for curl error
         if (0 < curl_errno($ch)) {
-           echo '[ERROR] Failed to connect to monero-wallet-rpc at ' . $this->host . ' port '. $this->port .'</br>';
+           echo '[ERROR] Failed to connect to mynt-wallet-rpc at ' . $this->host . ' port '. $this->port .'</br>';
         }
         // close the connection
         curl_close($ch);
@@ -220,7 +220,7 @@ class Monero_Library
     }
 
     /* 
-     * The following functions can all be called to interact with the monero rpc wallet
+     * The following functions can all be called to interact with the mynt rpc wallet
      * They will majority of them will return the result as an array
      * Example: $daemon->address(); where $daemon is an instance of this class, will return the wallet address as string within an array
      */
